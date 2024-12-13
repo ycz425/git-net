@@ -6,15 +6,16 @@ import sqlite3
 from dotenv import load_dotenv
 
 
-def fetch_data(num_repo: int, token: str, con: sqlite3.Connection):
+def fetch_data(token: str, con: sqlite3.Connection):
     URL = 'https://api.github.com/search/repositories'
+    NUM_REPO = 1000
     params = {'q': 'stars:>1000 is:public', 'sort': 'stars', 'order': 'desc', 'per_page': 100, 'page': 1}
     headers = {'Authorization': f'Bearer {token}'}
 
     count = 0
 
     cur = con.cursor()
-    while count < num_repo:
+    while count < NUM_REPO:
         response = requests.get(URL, params, headers=headers)
 
         if response.status_code != 200:
@@ -29,12 +30,12 @@ def fetch_data(num_repo: int, token: str, con: sqlite3.Connection):
             success = _fetch_contributions(repo, token, con)
             if not success:
                 cur.execute('DELETE FROM repositories WHERE id = ?', (repo['id'],))
-                print(f'Failed to fetch data for {repo['full_name']}')
+                print(f'[{count + 1}/{NUM_REPO}] Failed to fetch data for {repo['full_name']} ')
             else:
-                count += 1
-                print(f'Fetched repository {count}/{num_repo}')
-            
-            if count >= num_repo:
+                print(f'[{count + 1}/{NUM_REPO}] Fetched repository {repo['full_name']}')
+
+            count += 1
+            if count >= NUM_REPO:
                 break
         
         params['page'] += 1
@@ -101,4 +102,4 @@ if __name__ == '__main__':
     
     con = sqlite3.connect('data/raw_data.db')
     create_tables(con)
-    fetch_data(10000, TOKEN, con)
+    fetch_data(TOKEN, con)

@@ -33,14 +33,14 @@ def fetch_repositories(num: int, token: str) -> list[dict]:
 def add_contributors(data: list[dict], token: str) -> None:
     headers = {'Authorization': f'Bearer {token}'}
     for index, repo in enumerate(data):
-        response = requests.get(repo['contributors_url'], headers=headers)
+        response = requests.get(repo['contributors_url'], headers=headers).json()
 
         while type(response) != list:
             print('Sleeping...')
             time.sleep(3600)
-            response = requests.get(repo['contributors_url'])
+            response = requests.get(repo['contributors_url'], headers=headers)
         
-        data['contributors'] = response.json()
+        repo['contributors'] = response
         print(f'Add contributors for repository {index + 1}/{len(data)}')
 
 

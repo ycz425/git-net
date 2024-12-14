@@ -94,6 +94,8 @@ def create_tables(con: sqlite3.Connection):
         )
     ''')
 
+    con.commit()
+
 
 if __name__ == '__main__':
     response = requests.get('https://api.github.com/repositories')

@@ -6,7 +6,7 @@ import sqlite3
 from dotenv import load_dotenv
 
 
-def fetch_data(token: str, con: sqlite3.Connection):
+def fetch_data(token: str, con: sqlite3.Connection) -> None:
     URL = 'https://api.github.com/search/repositories'
     NUM_REPO = 1000
     params = {'q': 'stars:>1000 is:public', 'sort': 'stars', 'order': 'desc', 'per_page': 100, 'page': 1}
@@ -77,7 +77,7 @@ def _fetch_contributions(repo: dict, token: str, con: sqlite3.Connection) -> boo
     return True
 
         
-def create_tables(con: sqlite3.Connection):
+def create_tables(con: sqlite3.Connection) -> None:
     cur = con.cursor()
     cur.execute('''
         CREATE TABLE IF NOT EXISTS repositories(
@@ -93,6 +93,8 @@ def create_tables(con: sqlite3.Connection):
             FOREIGN KEY (repo_id) REFERENCES repositories (id) ON DELETE CASCADE
         )
     ''')
+
+    con.commit()
 
 
 if __name__ == '__main__':

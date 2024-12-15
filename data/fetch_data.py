@@ -53,7 +53,7 @@ def fetch_data(url: str, params: dict, token: str, parent_id: int, con: sqlite3.
     return True
         
 
-def create_tables(con: sqlite3.Connection) -> None:
+def create_table(con: sqlite3.Connection) -> None:
     cur = con.cursor()
     cur.execute('''
         CREATE TABLE IF NOT EXISTS repositories(
@@ -72,7 +72,7 @@ if __name__ == '__main__':
     TOKEN = os.getenv('GITHUB_FINE_GRAINED_ACCESS_TOKEN')
     
     con = sqlite3.connect('data/raw_data.db')
-    create_tables(con)
+    create_table(con)
     fetch_data(
         url='https://api.github.com/search/repositories',
         params={'q': 'stars:>1000 is:public', 'sort': 'forks', 'order': 'desc', 'per_page': 100, 'page': 1},

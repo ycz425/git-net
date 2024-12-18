@@ -1,7 +1,8 @@
 import sqlite3
 
 
-def get_repositories(con: sqlite3.Connection) -> list[dict]:
+def get_repositories() -> list[dict]:
+    con = sqlite3.connect('data/processed_data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT id, full_name, stargazers_count FROM repositories')
@@ -14,7 +15,8 @@ def get_repositories(con: sqlite3.Connection) -> list[dict]:
     return result
 
 
-def get_forks(con: sqlite3.Connection) -> list[dict]:
+def get_forks() -> list[dict]:
+    con = sqlite3.connect('data/processed_data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT id, parent_id FROM repositories GROUP BY id, parent_id')

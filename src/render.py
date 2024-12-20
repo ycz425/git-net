@@ -3,7 +3,7 @@ from data import data_access as da
 import plotly.graph_objects as go
 
 def render_graph(G: nx.Graph) -> None:
-    pos = nx.spring_layout(G)
+    pos = nx.spring_layout(G, iterations=100)
     nx.set_node_attributes(G, pos, 'pos')
 
     edge_x = []
@@ -37,7 +37,8 @@ def render_graph(G: nx.Graph) -> None:
         mode='markers',
         hoverinfo='text',
         marker=dict(
-            size=10
+            size=10,
+            color=['red' if G.nodes[node]['type'] == 'repo' else 'blue' for node in G.nodes()]
         )
     )
 

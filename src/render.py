@@ -1,8 +1,18 @@
 import networkx as nx
-from data import data_access as da
+from src.graph import connected_components
+import distinctipy
+import matplotlib.colors as mcolors
 import plotly.graph_objects as go
 
 def render_graph(G: nx.Graph) -> None:
+    components = connected_components(G)
+    for i in range(len(components)):
+        g = components[i]
+        for node in g.nodes():
+            G.nodes[node]['group'] = i
+
+    GROUP_COLORS = [mcolors.to_hex(color) for color in distinctipy.get_colors(20)]
+
     pos = nx.spring_layout(G, iterations=100)
     nx.set_node_attributes(G, pos, 'pos')
 
@@ -38,7 +48,7 @@ def render_graph(G: nx.Graph) -> None:
         hoverinfo='text',
         marker=dict(
             size=10,
-            color=['red' if G.nodes[node]['type'] == 'repo' else 'blue' for node in G.nodes()]
+            color=['red' if G.nodes[node]['type'] == 'repo' else GROUP_COLORS[G.nodes[node]['group']] for node in G.nodes()]
         )
     )
 

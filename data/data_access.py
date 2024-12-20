@@ -28,3 +28,30 @@ def get_forks() -> list[dict]:
     
     return result
 
+
+def get_users() -> list[dict]:
+    con = sqlite3.connect('data/processed_data.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute('SELECT * FROM users')
+    rows = cur.fetchall()
+
+    result = []
+    for row in rows:
+        result.append(dict(row))
+
+    return result
+
+
+def get_stars() -> list[dict]:
+    con = sqlite3.connect('data/processed_data.db')
+    con.row_factory = sqlite3.Row
+    cur = con.cursor()
+    cur.execute('SELECT * FROM stars')
+    rows = cur.fetchall()
+
+    result = []
+    for row in rows:
+        result.append(dict(row))
+
+    return result

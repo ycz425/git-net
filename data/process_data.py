@@ -18,7 +18,7 @@ def process_users(con_processed: sqlite3.Connection, con_raw: sqlite3.Connection
     cur_processed = con_processed.cursor()
     cur_raw = con_raw.cursor()
 
-    cur_raw.execute('SELECT id, body FROM stargazers WHERE id IN(SELECT id FROM stargazers GROUP BY id HAVING COUNT(id) >= 3)')
+    cur_raw.execute('SELECT id, body FROM stargazers WHERE id IN(SELECT id FROM stargazers GROUP BY id HAVING COUNT(id) >= 2)')
     for user in cur_raw.fetchall():
         body = json.loads(user[1])
         cur_processed.execute('INSERT OR IGNORE INTO users VALUES (?, ?, ?)', (user[0], body['login'], body['avatar_url']))
@@ -30,7 +30,7 @@ def process_stars(con_processed: sqlite3.Connection, con_raw: sqlite3.Connection
     cur_processed = con_processed.cursor()
     cur_raw = con_raw.cursor()
 
-    cur_raw.execute('SELECT id, repo_id FROM stargazers WHERE id IN(SELECT id FROM stargazers GROUP BY id HAVING COUNT(id) >= 3)')
+    cur_raw.execute('SELECT id, repo_id FROM stargazers WHERE id IN(SELECT id FROM stargazers GROUP BY id HAVING COUNT(id) >= 2)')
     for star in cur_raw.fetchall():
         cur_processed.execute('INSERT OR IGNORE INTO stars VALUES (?, ?)', (star[0], star[1]))
 

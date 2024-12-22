@@ -1,6 +1,6 @@
-# GitHub Graph Analysis and Recommendation
+# GitNet: GitHub Graph Analysis and Recommendation
 
-This project leverages the GitHub API to construct and analyze a graph where:
+This project explores the relationships between GitHub users and repositories through graph analysis. Leveraging the GitHub API, it constructs and analyzes a graph where:
 - **Nodes** represent repositories and users.
 - **Edges** represent relationships such as:
   - Forking relationships between repositories.

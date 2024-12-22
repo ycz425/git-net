@@ -1,12 +1,12 @@
 import networkx as nx
-from src.graph import connected_repos
 import distinctipy
 import matplotlib.colors as mcolors
 import plotly.graph_objects as go
 from networkx.algorithms.community import louvain_communities
+import src.graph as graph
 
-def render_graph(G: nx.Graph, show_communities=False) -> None:
-    groups = louvain_communities(G) if show_communities else [set(g) for g in connected_repos(G)]
+def render_graph(G: nx.Graph, show_communities=False, layout_file=None) -> None:
+    groups = louvain_communities(G) if show_communities else [set(g) for g in graph.connected_repos(G)]
     group_colors = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(groups))]
     for i in range(len(groups)):
         g = groups[i]
@@ -32,7 +32,7 @@ def render_graph(G: nx.Graph, show_communities=False) -> None:
         x=edge_x, y=edge_y,
         mode='lines',
         hoverinfo='none',
-        line=dict(width=0.5, color='#888')
+        line=dict(width=0.5, color='#ffffff')
     )
 
     node_x = []
@@ -46,9 +46,14 @@ def render_graph(G: nx.Graph, show_communities=False) -> None:
         x=node_x, y=node_y,
         mode='markers',
         hoverinfo='text',
+        text=[f'Repo: {G.nodes[node]['full_name']}' if G.nodes[node]['type'] == 'repo' else f'User: {G.nodes[node]['login']}' for node in G.nodes()],
         marker=dict(
             size=10,
-            color=['black' if not show_communities and G.nodes[node]['type'] == 'user' else group_colors[G.nodes[node]['group']] for node in G.nodes()]
+            color=['#E0E0E0' if not show_communities and G.nodes[node]['type'] == 'user' else group_colors[G.nodes[node]['group']] for node in G.nodes()],
+            line=dict(
+                color='white',
+                width=1
+            )
         )
     )
 
@@ -56,11 +61,17 @@ def render_graph(G: nx.Graph, show_communities=False) -> None:
         data=[edge_trace, node_trace],
         layout=go.Layout(
             title=dict(
-                text="<br>Network graph made with Python",
+                text="GitNet",
                 font=dict(
-                    size=16
-                )
+                    size=30,
+                    weight="bold" 
+                ),
+                y=0.95,                  
+                yanchor='top',  
             ),
+            plot_bgcolor='black',
+            paper_bgcolor='black',
+            font=dict(color='white'),
             showlegend=False,
             hovermode='closest',
             margin=dict(b=20,l=5,r=5,t=40),

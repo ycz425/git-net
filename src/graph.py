@@ -65,7 +65,7 @@ def single_source_shortest_paths(G: nx.Graph, source: int) -> tuple[dict, dict, 
     return dist, pred, sigma
 
 
-def betweenness_centrality(G: nx.Graph) -> float:
+def betweenness_centrality(G: nx.Graph) -> dict[int, float]:
     betweenness = {node: 0 for node in G.nodes()}
     for s in G.nodes():
         dist, pred, sigma = single_source_shortest_paths(G, s)

@@ -18,7 +18,7 @@ def get_repositories() -> list[dict]:
 
 
 def get_forks() -> list[dict]:
-    con = sqlite3.connect('data/processed_data.db')
+    con = sqlite3.connect('data/processed/data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT id, parent_id FROM repositories GROUP BY id, parent_id')
@@ -35,7 +35,7 @@ def get_forks() -> list[dict]:
 
 
 def get_users() -> list[dict]:
-    con = sqlite3.connect('data/processed_data.db')
+    con = sqlite3.connect('data/processed/data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT * FROM users')
@@ -51,7 +51,7 @@ def get_users() -> list[dict]:
 
 
 def get_stars() -> list[dict]:
-    con = sqlite3.connect('data/processed_data.db')
+    con = sqlite3.connect('data/processed/data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT * FROM stars')

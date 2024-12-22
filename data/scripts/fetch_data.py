@@ -119,7 +119,7 @@ if __name__ == '__main__':
     load_dotenv()
     TOKEN = os.getenv('GITHUB_FINE_GRAINED_ACCESS_TOKEN')
     
-    con = sqlite3.connect('data/raw_data.db')
+    con = sqlite3.connect('data/raw/data.db')
     create_table(con)
     fetch_forks(
         url='https://api.github.com/search/repositories',

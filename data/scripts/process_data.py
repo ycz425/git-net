@@ -72,8 +72,8 @@ def create_table(con: sqlite3.Connection) -> None:
 
 
 if __name__ == '__main__':
-    con_processed = sqlite3.connect('data/processed_data.db')
-    con_raw = sqlite3.connect('data/raw_data.db')
+    con_processed = sqlite3.connect('data/processed/data.db')
+    con_raw = sqlite3.connect('data/raw/data.db')
     create_table(con_processed)
     process_repos(con_processed, con_raw)
     process_users(con_processed, con_raw)

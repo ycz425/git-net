@@ -1,7 +1,24 @@
 import networkx as nx
 from collections import deque
+from data import data_access as da
 
-def construct(nodes: list, edges: list) -> nx.Graph:
+
+def construct(include_users=False) -> nx.Graph:
+    repos = da.get_repositories()
+    forks = da.get_forks()
+    users = da.get_users()
+    stars = da.get_stars()
+    
+    nodes = []
+    edges = []
+
+    if include_users:
+        nodes += [(user['id'], {'type': 'user', 'login': user['login']}) for user in users]
+        edges += [(star['user_id'], star['repo_id']) for star in stars]
+
+    nodes += [(repo['id'], {'type': 'repo', 'full_name': repo['full_name']}) for repo in repos]
+    edges += [(fork['id'], fork['parent_id']) for fork in forks if fork['parent_id'] is not None]
+
     G = nx.Graph() 
     G.add_nodes_from(nodes) 
     G.add_edges_from(edges)
@@ -33,15 +50,15 @@ def connected_repos(G: nx.Graph) -> list[nx.Graph]:
     return result
     
 
-def max_degree_repo(G: nx.Graph) -> tuple[int, int]:
+def max_degree_repo(G: nx.Graph) -> tuple[str, int]:
     return max([deg_view for deg_view in G.degree if G.nodes[deg_view[0]]['type'] == 'repo'], key=lambda x: x[1])
 
 
-def max_degree_user(G: nx.Graph) -> tuple[int, int]:
+def max_degree_user(G: nx.Graph) -> tuple[str, int]:
     return max([deg_view for deg_view in G.degree if G.nodes[deg_view[0]]['type'] == 'user'], key=lambda x: x[1])
 
 
-def single_source_shortest_paths(G: nx.Graph, source: int) -> tuple[dict, dict, dict]:
+def single_source_shortest_paths(G: nx.Graph, source: str) -> tuple[dict, dict, dict]:
     queue = deque([source])
     dist = {node: -1 for node in G.nodes()}
     pred = {node: [] for node in G.nodes()}
@@ -65,7 +82,7 @@ def single_source_shortest_paths(G: nx.Graph, source: int) -> tuple[dict, dict, 
     return dist, pred, sigma
 
 
-def betweenness_centrality(G: nx.Graph) -> dict[int, float]:
+def betweenness_centrality(G: nx.Graph) -> dict[str, float]:
     betweenness = {node: 0 for node in G.nodes()}
     for s in G.nodes():
         dist, pred, sigma = single_source_shortest_paths(G, s)

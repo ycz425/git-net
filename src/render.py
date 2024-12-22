@@ -3,15 +3,15 @@ from src.graph import connected_repos
 import distinctipy
 import matplotlib.colors as mcolors
 import plotly.graph_objects as go
+from networkx.algorithms.community import louvain_communities
 
-def render_graph(G: nx.Graph) -> None:
-    components = connected_repos(G)
-    for i in range(len(components)):
-        g = components[i]
-        for node in g.nodes():
+def render_graph(G: nx.Graph, show_communities=False) -> None:
+    groups = louvain_communities(G) if show_communities else [set(g) for g in connected_repos(G)]
+    group_colors = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(groups))]
+    for i in range(len(groups)):
+        g = groups[i]
+        for node in g:
             G.nodes[node]['group'] = i
-
-    GROUP_COLORS = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(components))]
 
     pos = nx.spring_layout(G, iterations=100)
     nx.set_node_attributes(G, pos, 'pos')
@@ -48,7 +48,7 @@ def render_graph(G: nx.Graph) -> None:
         hoverinfo='text',
         marker=dict(
             size=10,
-            color=['black' if G.nodes[node]['type'] == 'user' else GROUP_COLORS[G.nodes[node]['group']] for node in G.nodes()]
+            color=['black' if not show_communities and G.nodes[node]['type'] == 'user' else group_colors[G.nodes[node]['group']] for node in G.nodes()]
         )
     )
 

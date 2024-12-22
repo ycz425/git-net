@@ -2,7 +2,7 @@ import sqlite3
 
 
 def get_repositories() -> list[dict]:
-    con = sqlite3.connect('data/processed_data.db')
+    con = sqlite3.connect('data/processed/data.db')
     con.row_factory = sqlite3.Row
     cur = con.cursor()
     cur.execute('SELECT id, full_name, stargazers_count FROM repositories')

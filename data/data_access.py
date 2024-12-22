@@ -10,7 +10,9 @@ def get_repositories() -> list[dict]:
 
     result = []
     for row in rows:
-        result.append(dict(row))
+        row = dict(row)
+        row['id'] = f'repo_{row['id']}'
+        result.append(row)
 
     return result
 
@@ -24,7 +26,10 @@ def get_forks() -> list[dict]:
 
     result = []
     for row in rows:
-        result.append(dict(row))
+        row = dict(row)
+        row['id'] = f'repo_{row['id']}'
+        row['parent_id'] = f'repo_{row['parent_id']}' if row['parent_id'] else None
+        result.append(row)
     
     return result
 
@@ -38,7 +43,9 @@ def get_users() -> list[dict]:
 
     result = []
     for row in rows:
-        result.append(dict(row))
+        row = dict(row)
+        row['id'] = f'user_{row['id']}'
+        result.append(row)
 
     return result
 
@@ -52,6 +59,9 @@ def get_stars() -> list[dict]:
 
     result = []
     for row in rows:
-        result.append(dict(row))
+        row = dict(row)
+        row['user_id'] = f'user_{row['user_id']}'
+        row['repo_id'] = f'repo_{row['repo_id']}'
+        result.append(row)
 
     return result

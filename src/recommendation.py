@@ -3,7 +3,7 @@ import numpy as np
 from numpy.linalg import norm
 
 
-def recommend_repos(G: nx.Graph, target_user: int, num: int) -> list[int]:
+def recommend_repos(G: nx.Graph, target_user: str, num: int) -> list[str]:
     users = [node for node in G.nodes() if G.nodes[node]['type'] == 'user']
     repos = [node for node in G.nodes() if G.nodes[node]['type'] == 'repo']
     user_repo_matrix = np.zeros((len(users), len(repos)))

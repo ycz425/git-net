@@ -1,3 +1,4 @@
+import pickle
 import networkx as nx
 import distinctipy
 import matplotlib.colors as mcolors
@@ -5,16 +6,21 @@ import plotly.graph_objects as go
 from networkx.algorithms.community import louvain_communities
 import src.graph as graph
 
-def render_graph(G: nx.Graph, show_communities=False, layout_file=None) -> None:
+def render_graph(G: nx.Graph = None, include_users=False, show_communities=False) -> None:
+    if not G:
+        with open('data/graphs/repos_and_users.pkl' if include_users else 'data/graphs/repos.pkl', 'rb') as file:
+            G = pickle.load(file)
+
     groups = louvain_communities(G) if show_communities else [set(g) for g in graph.connected_repos(G)]
     group_colors = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(groups))]
-    for i in range(len(groups)):
-        g = groups[i]
-        for node in g:
-            G.nodes[node]['group'] = i
-
-    pos = nx.spring_layout(G, iterations=100)
-    nx.set_node_attributes(G, pos, 'pos')
+    for node in G.nodes():
+        if not show_communities and G.nodes[node]['type'] == 'user':
+            G.nodes[node]['color'] = '#E0E0E0'
+        else:
+            for i, group in enumerate(groups):
+                if node in group:
+                    G.nodes[node]['color'] = group_colors[i]
+                    break
 
     edge_x = []
     edge_y = []
@@ -49,7 +55,7 @@ def render_graph(G: nx.Graph, show_communities=False, layout_file=None) -> None:
         text=[f'Repo: {G.nodes[node]['full_name']}' if G.nodes[node]['type'] == 'repo' else f'User: {G.nodes[node]['login']}' for node in G.nodes()],
         marker=dict(
             size=10,
-            color=['#E0E0E0' if not show_communities and G.nodes[node]['type'] == 'user' else group_colors[G.nodes[node]['group']] for node in G.nodes()],
+            color=[G.nodes[node]['color'] for node in G.nodes()],
             line=dict(
                 color='white',
                 width=1
@@ -65,8 +71,7 @@ def render_graph(G: nx.Graph, show_communities=False, layout_file=None) -> None:
                 font=dict(
                     size=30,
                     weight="bold" 
-                ),
-                y=0.95,                  
+                ),       
                 yanchor='top',  
             ),
             plot_bgcolor='black',

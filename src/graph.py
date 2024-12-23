@@ -1,14 +1,15 @@
 import networkx as nx
 from collections import deque
-from data import data_access as da
+from data.scripts import data_access as da
+import pickle
 
 
-def construct(include_users=False) -> nx.Graph:
+def construct(include_users=False, spring_layout_iterations=50, save=False) -> nx.Graph:
     repos = da.get_repositories()
     forks = da.get_forks()
     users = da.get_users()
     stars = da.get_stars()
-    
+
     nodes = []
     edges = []
 
@@ -23,6 +24,13 @@ def construct(include_users=False) -> nx.Graph:
     G.add_nodes_from(nodes) 
     G.add_edges_from(edges)
 
+    pos = nx.spring_layout(G, iterations=spring_layout_iterations)
+    nx.set_node_attributes(G, pos, 'pos')
+
+    if save:
+        with open('data/graphs/repos_and_users.pkl' if include_users else 'data/graphs/repos.pkl', 'wb') as file:
+            pickle.dump(G, file)
+            
     return G
 
 

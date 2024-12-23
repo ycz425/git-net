@@ -65,7 +65,7 @@ def _create_edge_trace(G: nx.Graph, type: str) -> go.Scatter:
 
 
 
-def render_graph(show_communities=False) -> None:
+def create_figure(show_communities=False) -> go.Figure:
     with open('data/graphs/repos_and_users.pkl', 'rb') as file:
         G = pickle.load(file)
 
@@ -88,47 +88,14 @@ def render_graph(show_communities=False) -> None:
     fig = go.Figure(
         data=[fork_edge_trace, star_edge_trace, user_node_trace, repo_node_trace],
         layout=go.Layout(
-            title=dict(
-                text="GitNet",
-                font=dict(
-                    size=30,
-                    weight="bold" 
-                ),       
-                yanchor='top',  
-            ),
             plot_bgcolor='black',
             paper_bgcolor='black',
             font=dict(color='white'),
             showlegend=False,
             hovermode='closest',
-            margin=dict(b=20,l=5,r=5,t=40),
+            margin=dict(b=0,l=0,r=0,t=0),
             xaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
             yaxis=dict(showgrid=False, zeroline=False, showticklabels=False),
-            updatemenus=[
-                dict(
-                    buttons=list([
-                        dict(
-                            args=[{"visible": [True, True, True, True]}],
-                            label='Repositories + Users',
-                            method='update'
-
-                        ),
-                        dict(
-                            args=[{"visible": [True, False, False, True]}],
-                            label='Repositories',
-                            method='update'
-                        )
-                    ]),
-                    direction='down',
-                    pad={"r": 10, "t": 10},
-                    showactive=True,
-                    x=0.15,
-                    xanchor="left",
-                    y=1.05,
-                    yanchor="top"
-                )
-            ]
         )
     )
-
-    fig.show()
+    return fig

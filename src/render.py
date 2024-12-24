@@ -1,4 +1,3 @@
-import pickle
 import networkx as nx
 import distinctipy
 import matplotlib.colors as mcolors
@@ -7,7 +6,15 @@ from networkx.algorithms.community import louvain_communities
 import src.graph as graph
 
 
-def _create_node_trace(G: nx.Graph, type: str) -> go.Scatter:
+def _get_group_color(node: str, groups: list[set], group_colors: list[str]):
+    for i, group in enumerate(groups):
+        if node in group:
+            return group_colors[i]
+    
+    return '#E0E0E0'
+
+
+def _create_node_trace(G: nx.Graph, type: str, groups: list[set]) -> go.Scatter:
     node_x = []
     node_y = []
     nodes = []
@@ -18,6 +25,7 @@ def _create_node_trace(G: nx.Graph, type: str) -> go.Scatter:
             node_x.append(x)
             node_y.append(y)
 
+    group_colors = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(groups))]
 
     node_trace = go.Scatter(
         x=node_x, y=node_y,
@@ -26,7 +34,7 @@ def _create_node_trace(G: nx.Graph, type: str) -> go.Scatter:
         text=[f'Repo: {G.nodes[node]['full_name']}' if G.nodes[node]['type'] == 'repo' else f'User: {G.nodes[node]['login']}' for node in nodes],
         marker=dict(
             size=10,
-            color=[G.nodes[node]['color'] for node in nodes],
+            color=[_get_group_color(node, groups, group_colors) for node in nodes],
             line=dict(
                 color='white',
                 width=1
@@ -65,28 +73,30 @@ def _create_edge_trace(G: nx.Graph, type: str) -> go.Scatter:
 
 
 
-def create_figure(show_communities=False) -> go.Figure:
-    with open('data/graphs/repos_and_users.pkl', 'rb') as file:
-        G = pickle.load(file)
+def create_figure(G: nx.Graph) -> go.Figure:
+    communities = louvain_communities(G)
+    connected_components = [set(g) for g in graph.connected_repos(G)]
+    
+    repo_node_component_trace = _create_node_trace(G, 'repo', connected_components)
+    repo_node_community_trace = _create_node_trace(G, 'repo', communities)
+    user_node_component_trace = _create_node_trace(G, 'user', connected_components)
+    user_node_community_trace = _create_node_trace(G, 'user', communities)
+    
+    repo_node_community_trace.visible = False
+    user_node_community_trace.visible = False
 
-    groups = louvain_communities(G) if show_communities else [set(g) for g in graph.connected_repos(G)]
-    group_colors = [mcolors.to_hex(color) for color in distinctipy.get_colors(len(groups))]
-    for node in G.nodes():
-        if not show_communities and G.nodes[node]['type'] == 'user':
-            G.nodes[node]['color'] = '#E0E0E0'
-        else:
-            for i, group in enumerate(groups):
-                if node in group:
-                    G.nodes[node]['color'] = group_colors[i]
-                    break
-
-    repo_node_trace = _create_node_trace(G, 'repo')
-    user_node_trace = _create_node_trace(G, 'user')
     fork_edge_trace = _create_edge_trace(G, 'fork')
     star_edge_trace = _create_edge_trace(G, 'star')
 
     fig = go.Figure(
-        data=[fork_edge_trace, star_edge_trace, user_node_trace, repo_node_trace],
+        data=[
+            fork_edge_trace,
+            star_edge_trace,
+            user_node_component_trace,
+            user_node_community_trace,
+            repo_node_component_trace,
+            repo_node_community_trace
+        ],
         layout=go.Layout(
             plot_bgcolor='black',
             paper_bgcolor='black',
@@ -99,3 +109,5 @@ def create_figure(show_communities=False) -> go.Figure:
         )
     )
     return fig
+
+    

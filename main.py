@@ -2,9 +2,10 @@ from dash import Dash, html, dcc, callback, Output, Input, State
 from src.render import create_figure
 import pickle
 import plotly.graph_objects as go
+import src.graph as graph
 
 
-with open('data/graphs/repos_and_users.pkl', 'rb') as file:
+with open('data/graphs/data.pkl', 'rb') as file:
     G = pickle.load(file)
 
 create_figure(G)

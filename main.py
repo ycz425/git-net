@@ -11,20 +11,46 @@ with open('data/graphs/data.pkl', 'rb') as file:
 create_figure(G)
 
 app = Dash()
-app.layout =[
-    html.H1('GitNet'),
-    html.H2('GitHub Graph Analysis and Recommendation'),
+app.layout = [
+    html.Div(
+        children=[
+            html.Div(
+                children=[
+                    html.H1('GitNet', style={'font-size': '36px'}),
+                    html.P('GitHub Graph Analysis and Recommendation', style={'font-size': '28px'}),
+                ],
+                style={'display': 'flex', 'flex-direction': 'row', 'align-items': 'center', 'gap': '1.25rem', 'border-bottom': '1px solid white'}
+            ),
+            html.Div(
+                children=[
+                    html.Div(
+                        children=[
+                            html.P('User Visibility:', style={'font-weight': 'bold'}),
+                            dcc.RadioItems(
+                                id='user-visibility',
+                                options=[{'label': 'Hide', 'value': False}, {'label': 'Show', 'value': True}],
+                                value=False
+                            ),
+                        ]
+                    ),
+                    html.Div(
+                        children=[
+                            html.P('Color Grouping:', style={'font-weight': 'bold'}),
+                            dcc.RadioItems(
+                                id='color-group',
+                                options=[{'label': 'Communities', 'value': True}, {'label': 'Connected Components', 'value': False}],
+                                value=False
+                            )
+                        ]
+                    ),
+                    
+                ],
+                style={'display': 'flex', 'flex-direcition': 'row', 'gap': '2rem', 'border-bottom': '1px solid white', 'padding-bottom': '20px'}
+            ),
+        ],
+        style={'padding-left': '40px', 'padding-right': '40px', 'padding-top': '5px'}
+    ),
     dcc.Store(id='figure'),
-    dcc.RadioItems(
-        id='user-visibility',
-        options=[{'label': 'Hide users', 'value': False}, {'label': 'Show users', 'value': True}],
-        value=False
-    ),
-    dcc.RadioItems(
-        id='color-group',
-        options=[{'label': 'Show communities', 'value': True}, {'label': 'Show connected components', 'value': False}],
-        value=False
-    ),
     dcc.Loading(
         id="loading-graph",
         type="circle",
@@ -32,7 +58,7 @@ app.layout =[
             dcc.Graph(
                 id='graph',
                 figure={},
-                style={'height': '100vh', 'width': '100vw', 'margin': '0'}
+                style={'height': '100vh', 'margin': '0', 'padding-left': '40px', 'padding-right': '40px'}
             )
         ],
     )

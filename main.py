@@ -3,6 +3,7 @@ from src.render import create_figure
 import pickle
 import plotly.graph_objects as go
 
+
 with open('data/graphs/repos_and_users.pkl', 'rb') as file:
     G = pickle.load(file)
 

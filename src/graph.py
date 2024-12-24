@@ -4,7 +4,7 @@ from data.scripts import data_access as da
 import pickle
 
 
-def construct(include_users=False, spring_layout_iterations=50, save=False) -> nx.Graph:
+def construct(spring_layout_iterations=50, save=False) -> nx.Graph:
     repos = da.get_repositories()
     forks = da.get_forks()
     users = da.get_users()
@@ -13,10 +13,8 @@ def construct(include_users=False, spring_layout_iterations=50, save=False) -> n
     nodes = []
     edges = []
 
-    if include_users:
-        nodes += [(user['id'], {'type': 'user', 'login': user['login']}) for user in users]
-        edges += [(star['user_id'], star['repo_id']) for star in stars]
-
+    nodes += [(user['id'], {'type': 'user', 'login': user['login']}) for user in users]
+    edges += [(star['user_id'], star['repo_id']) for star in stars]
     nodes += [(repo['id'], {'type': 'repo', 'full_name': repo['full_name']}) for repo in repos]
     edges += [(fork['id'], fork['parent_id']) for fork in forks if fork['parent_id'] is not None]
 
@@ -28,7 +26,7 @@ def construct(include_users=False, spring_layout_iterations=50, save=False) -> n
     nx.set_node_attributes(G, pos, 'pos')
 
     if save:
-        with open('data/graphs/repos_and_users.pkl' if include_users else 'data/graphs/repos.pkl', 'wb') as file:
+        with open('data/graphs/data.pkl', 'wb') as file:
             pickle.dump(G, file)
             
     return G

@@ -127,8 +127,8 @@ if __name__ == '__main__':
         token=TOKEN,
         parent_id=None,
         con=con,
-        num=30,
-        depth=5
+        num=10,
+        depth=3
     )
 
     fetch_stargazers(con=con, token=TOKEN, num=1000)

@@ -46,7 +46,7 @@ app.layout = [
                     ),
                     html.Div(
                         children=[
-                            html.Button('Reset', id='reset-button', n_clicks=0)
+                            html.Button('Reset View', id='reset-button', n_clicks=0)
                         ]
                     )
                 ],

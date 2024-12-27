@@ -18,8 +18,8 @@ This project explores the relationships between GitHub users and repositories th
 ### Data Analysis
 The project includes the following graph analysis features:
 - **Connected Components Analysis**: Identifying distinct clusters of nodes within the graph.
-- **Degree Centrality**: Measuring the importance of nodes based on the number of direct connections.
-- **Betweenness Centrality**: Identifying nodes that act as bridges between different parts of the graph.
+- **Degree Centrality** (not available through UI): Measuring the importance of nodes based on the number of direct connections.
+- **Betweenness Centrality** (not available through UI): Identifying nodes that act as bridges between different parts of the graph.
 - **Louvain Community Detection**: Visualizing communities within the graph using modularity-based clustering.
 
 ### Recommendation System
@@ -51,7 +51,7 @@ The project includes the following graph analysis features:
    ```
 
 ### Running the Project
-1. Create a .env file and set up your GitHub fine-grained access token as an environment variable:
+1. Create a .env file and set up your GitHub fine-grained access token as an environment variable (only necessary for fetching data from GitHubAPI):
    ```Python
    GITHUB_FINE_GRAINED_ACCESS_TOKEN = <your_token_here>
    ```
@@ -59,13 +59,13 @@ The project includes the following graph analysis features:
    ```bash
    python main.py
    ```
-3. Visualize the graph and analysis results in your browser.
+3. Visualize the graph and analysis results in your browser. Click on user nodes to generate recommendations.
+4. Explore other algorithms and functions in ```graph.py```.
 
 ## Future Plans
 - Enhanced visualizations with more interactive features.
 - Integration with advanced machine learning models for recommendations.
 - Scalability improvements for handling large datasets.
-- Web interface for easier interaction with the graph and analysis tools.
 
 ## Contributing
 Contributions are welcome! Please feel free to submit issues or pull requests.
@@ -76,6 +76,7 @@ This project is licensed under the MIT License. See the `LICENSE` file for more 
 ## Acknowledgments
 - **NetworkX** for graph analysis.
 - **Plotly** for visualizations.
+- **Dash** for web interface.
 - **GitHub API** for providing access to repository and user data.
 
 ---

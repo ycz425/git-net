@@ -8,26 +8,26 @@ This project explores the relationships between GitHub users and repositories th
 
 ## Features
 
-#### Graph Construction
+### Graph Construction
 - **Repositories as Nodes**: Each GitHub repository is represented as a node.
 - **Users as Nodes**: Each GitHub user is represented as a node.
 - **Edges**:
   - Between repositories: Representing forking relationships.
   - Between users and repositories: Representing starring relationships.
 
-#### Data Analysis
+### Data Analysis
 The project includes the following graph analysis features:
 - **Connected Components Analysis**: Identifying distinct clusters of nodes within the graph.
 - **Degree Centrality** (not available through UI): Measuring the importance of nodes based on the number of direct connections.
 - **Betweenness Centrality** (not available through UI): Identifying nodes that act as bridges between different parts of the graph.
 - **Louvain Community Detection**: Visualizing communities within the graph using modularity-based clustering.
 
-#### Recommendation System
+### Recommendation System
 - A hybrid recommendation algorithm:
   - **Collaborative Filtering**: Suggesting repositories based on similar users.
   - **Graph-Based Recommendations**: Suggesting neighboring repositories based on graph structure.
 
-#### Visualization
+### Visualization
 - Basic visualizations using **Plotly** to:
   - Display the graph structure.
   - Highlight communities and connected components.

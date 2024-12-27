@@ -29,16 +29,19 @@ def _create_node_trace(G: nx.Graph, type: str, groups: list[set]) -> go.Scatter:
 
     node_trace = go.Scatter(
         x=node_x, y=node_y,
+        name='nodes',
         mode='markers',
         hoverinfo='text',
         text=[f'Repo: {G.nodes[node]['full_name']}' if G.nodes[node]['type'] == 'repo' else f'User: {G.nodes[node]['login']}' for node in nodes],
+        customdata=[{'id': node} for node in nodes],
         marker=dict(
             size=10,
             color=[_get_group_color(node, groups, group_colors) for node in nodes],
             line=dict(
                 color='white',
-                width=1
-            )
+                width=[0.5] * len(nodes)
+            ),
+            opacity=[1] * len(nodes)
         )
     )
 
@@ -64,9 +67,10 @@ def _create_edge_trace(G: nx.Graph, type: str) -> go.Scatter:
 
     edge_trace = go.Scatter(
         x=edge_x, y=edge_y,
+        name='edges',
         mode='lines',
         hoverinfo='none',
-        line=dict(width=0.5, color='#ffffff')
+        line=dict(width=0.5, color='#aaaaaa')
     )
 
     return edge_trace

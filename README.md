@@ -55,9 +55,9 @@ The project includes the following graph analysis features:
    ```Python
    GITHUB_FINE_GRAINED_ACCESS_TOKEN = <your_token_here>
    ```
-2. Run the script to construct the graph and analyze the data:
+2. Run the script to start tbe Dash app:
    ```bash
-   python main.py
+   python app.py
    ```
 3. Visualize the graph and analysis results in your browser. Click on user nodes to generate recommendations.
 4. Explore other algorithms and functions in ```graph.py```.
